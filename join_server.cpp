@@ -38,8 +38,11 @@ void RequestHandler::do_read() {
 #else
                         for (auto &cmd : input_cmds) {
                             auto respHolder = getResponseCommand(move(cmd));
+                            bool write_in_progress = !responses_.empty();
                             responses_.push_back(respHolder->runCommand(db_));
-                            do_write();
+                            if (!write_in_progress) {
+                                do_write();
+                            }
                         }
 #endif
                     }
@@ -77,11 +80,11 @@ void RequestHandler::do_write() {
 }
 
 void JoinServer::do_accept() {
-    acceptor_.async_accept(
-            [this](boost::system::error_code ec, ba::ip::tcp::socket socket)
+    acceptor_.async_accept(socket_,
+            [this](boost::system::error_code ec)
             {
                 if (!ec) {
-                    std::make_shared<RequestHandler>(std::move(socket), db_)->start();
+                    std::make_shared<RequestHandler>(std::move(socket_), db_)->start();
                 }
 
                 do_accept();

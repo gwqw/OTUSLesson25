@@ -48,9 +48,9 @@ private:
 
 class JoinServer {
 public:
-    JoinServer(ba::io_service& io_context, const ba::ip::tcp::endpoint& endpoint,
-                DataBase& db)
-            : acceptor_(io_context, endpoint), db_(db)
+    JoinServer(ba::io_service& io_service, const ba::ip::tcp::endpoint& endpoint,
+               DataBase& db)
+            : acceptor_(io_service, endpoint), socket_(io_service), db_(db)
     {
         do_accept();
     }
@@ -59,5 +59,6 @@ private:
     void do_accept();
 
     boost::asio::ip::tcp::acceptor acceptor_;
+    ba::ip::tcp::socket socket_;
     DataBase& db_;
 };
