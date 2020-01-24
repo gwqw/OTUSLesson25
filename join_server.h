@@ -8,6 +8,12 @@
 #include <boost/asio.hpp>
 
 #define MULTITHREAD
+#include <boost/version.hpp>
+#if  BOOST_VERSION < 106600
+#define OLD_BOOST
+#include "thread_pool.h"
+#endif
+
 
 #include "database.h"
 #include "command_parser.h"
@@ -34,7 +40,11 @@ private:
     CommandParser cmd_parser_;
     std::deque<std::string> responses_;
 #ifdef MULTITHREAD
+#ifdef OLD_BOOST
+    ThreadPool pool_;
+#else
     ba::thread_pool pool_;
+#endif
     std::mutex mtx_;
 #endif
 

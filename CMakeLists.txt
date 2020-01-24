@@ -21,6 +21,7 @@ set(SOURCE
         str_utils.cpp str_utils.h
         command_parser.cpp command_parser.h
         command_handler.cpp command_handler.h
+        thread_pool.cpp thread_pool.h
 )
 set(EXE_SOURCE main.cpp ${SOURCE})
 set(TEST_SOURCE test_course.cpp ${SOURCE})

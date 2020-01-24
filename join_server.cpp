@@ -26,12 +26,20 @@ void RequestHandler::do_read() {
                         auto input_cmds = cmd_parser_.parseCommands(data_.data(), length);
                         // TODO: move run task to thread_pool
 #ifdef MULTITHREAD
-                        ba::post(pool_, [this, input_cmds = move(input_cmds) /*<--coolest lifehack*/]() mutable {
+#ifdef OLD_BOOST
+                        post(
+#else
+                        ba::post(
+#endif
+                            pool_, [this, input_cmds = move(input_cmds) /*<--coolest lifehack*/]() mutable {
                                 lock_guard<mutex> lk(mtx_);
                                 for (auto &cmd : input_cmds) {
                                     auto respHolder = getResponseCommand(move(cmd));
+                                    bool write_in_progress = !responses_.empty();
                                     responses_.push_back(respHolder->runCommand(db_));
-                                    do_write();
+                                    if (!write_in_progress) {
+                                        do_write();
+                                    }
                                 }
                             }
                         );
