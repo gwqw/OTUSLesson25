@@ -7,8 +7,8 @@ using namespace std;
 
 std::string printResponseTable(const ResponseTable& rt) {
     stringstream ss;
-    for (const auto& r : rt) {
-        ss << r << '\n';
+    for (const auto& [id, r] : rt) {
+        ss << id << ',' << r << '\n';
     }
     return ss.str();
 }
@@ -21,8 +21,12 @@ void InsertResponse::parseCommand(CommandHolder input_cmd) {
 }
 
 std::string InsertResponse::runCommand(DataBase &db) {
-    auto res = db.insert(table_name, id, name);
-    return res ? "OK\n" : "ERR duplicate " + to_string(id) + '\n';
+    auto res = db.insert(table_name, id, move(name));
+    if (res) {
+        return "OK\n"s;
+    } else {
+        return "ERR duplicate " + to_string(id) + '\n';
+    }
 }
 
 void TruncateResponse::parseCommand(CommandHolder input_cmd) {

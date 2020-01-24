@@ -16,6 +16,7 @@ CommandParser::Commands CommandParser::parseCommands(char* data, std::size_t dat
             if (pos != string_view::npos) {
                 res.push_back(parseCommandFrom(buffer_));
             }
+            buffer_.clear();
         }
         if (pos != string_view::npos) {
             res.push_back(parseCommandFrom(sv.substr(0, pos)));

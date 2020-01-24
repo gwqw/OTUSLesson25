@@ -81,6 +81,8 @@ void RequestHandler::do_write() {
                              if (!responses_.empty())
                              {
                                  do_write();
+                             } else {
+                                 //cerr << "done" << endl;
                              }
                          }
                      }

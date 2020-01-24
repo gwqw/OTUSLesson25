@@ -28,19 +28,19 @@ BOOST_AUTO_TEST_SUITE(database_test_suite)
         db.insert("B", 8, "selection");
         {
             auto res = db.intersection();
-            ResponseTable expected = {{3, "violation", "proposal"},
-                                      {4, "quality",   "example"},
-                                      {5, "precision", "lake"}};
+            ResponseTable expected = {{3, {"violation", "proposal"}},
+                                      {4, {"quality",   "example"}},
+                                      {5, {"precision", "lake"}}};
             BOOST_CHECK(res == expected);
         }
         {
             auto res = db.symmetric_difference();
-            ResponseTable expected = {{0, "lean",    ""},
-                                      {1, "sweater", ""},
-                                      {2, "frank",   ""},
-                                      {6, "",        "flour"},
-                                      {7, "",        "wonder"},
-                                      {8, "",        "selection"},
+            ResponseTable expected = {{0, {"lean",    ""}},
+                                      {1, {"sweater", ""}},
+                                      {2, {"frank",   ""}},
+                                      {6, {"",        "flour"}},
+                                      {7, {"",        "wonder"}},
+                                      {8, {"",        "selection"}},
             };
             BOOST_CHECK(res == expected);
         }
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_SUITE(database_test_suite)
         {
             DataBase db;
             bool res = db.insert("A", 0, "lean");
-            std::set<Field> expected{{0, "lean"}};
+            Table::table_t expected{{0, "lean"}};
             BOOST_CHECK(res);
             {
                 auto table = db.getTable("A").getTable();
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_SUITE(database_test_suite)
             db.insert("A", 0, "lean");
             db.truncate("A");
             auto table = db.getTable("A").getTable();
-            std::set<Field> expected;
+            Table::table_t expected;
             BOOST_CHECK(table == expected);
         }
         {
@@ -80,14 +80,14 @@ BOOST_AUTO_TEST_SUITE(database_test_suite)
             db.insert("A", 1, "test");
             db.truncate("A");
             auto table = db.getTable("A").getTable();
-            std::set<Field> expected;
+            Table::table_t expected;
             BOOST_CHECK(table == expected);
         }
         {
             DataBase db;
             db.truncate("A");
             auto table = db.getTable("A").getTable();
-            std::set<Field> expected;
+            Table::table_t expected;
             BOOST_CHECK(table == expected);
         }
     }

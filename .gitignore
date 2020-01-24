@@ -33,8 +33,10 @@
 
 # Directories
 *debug*/
+*release*/
 .git/
 bak/
 .idea/
 html/
 latex/
+venv/
